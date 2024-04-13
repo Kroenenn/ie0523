@@ -13,7 +13,7 @@ module tester(
     input wire G_C,
     input wire B,
     input wire A_B,
-    input wire S_L,
+    input wire A_P,
 
     output reg [7:0] P,
     output reg reset,
