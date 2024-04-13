@@ -67,14 +67,16 @@ module gateSystem(
     
 
 
-    output reg G, // Salida: Acción de la compuerta (abrir/cerrar)
+    output reg G_O, // Salida: Acción de la compuerta (abrir/cerrar)
+    output reg G_C, // Salida: Estado de la compuerta (abierta/cerrada)
     output reg B, // Salida: Señal de bloqueo del sistema
     output reg A_B // Salida: Alarma de bloqueo
 );
 
     // Estado inicial de la compuerta, el bloqueo y la alarma de bloqueo
     initial begin
-        G = 0;
+        G_O = 0;
+        G_C = 0;
         B = 0;
         A_B = 0;
     end
@@ -82,22 +84,32 @@ module gateSystem(
 
     // Bloque always para la lógica combinacional de control de la compuerta
     always @(*) begin
-        $display("Time: %t, SL: %b, Sensor Arrival: %b, Sensor Parked: %b, G: %b, B: %b, AB: %b", $time, S_L, sensor_arrival, sensor_parked, G, B, A_B);
+        $display("Time: %t, SL: %b, Sensor Arrival: %b, Sensor Parked: %b, G_O: %b, G_C: %b, B: %b, AB: %b", $time, S_L, sensor_arrival, sensor_parked, G_O, G_C, B, A_B);
         if (S_L) begin
-            G = !sensor_parked;  // Abre si no está estacionado, esto es por seguridad
+            G_O = 1; // Abrir la compuerta si la contraseña es válida
+            G_C = 0;
             B = 0;
             A_B = 0;
-        end else if (sensor_arrival && sensor_parked) begin // Si ambos sensores están activos, se activa el bloqueo
+        end 
+        else if (sensor_arrival && sensor_parked) begin // Si ambos sensores están activos, se activa el bloqueo
             B = 1;
             A_B = 1;
-            G = 0;
-        end else begin
-            G = 0; // Asegura que la compuerta esté cerrada en cualquier otra condición
+        end 
+        else if (!sensor_parked) begin
+            G_C = 0;
+        end
+        else if (sensor_parked) begin 
+            G_C = 1; // Cierra la compuerta si el vehículo está estacionado
+            G_O = 0;
+        end
+        else begin
+
             // Si se acaba de ingresar una contraseña correcta para desbloquear, resetear B y A_B
             if (S_L == 1) begin
                 B = 0;
                 A_B = 0;
             end
+            
         end
     end
 endmodule

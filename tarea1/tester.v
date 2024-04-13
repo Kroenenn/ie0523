@@ -4,10 +4,17 @@
     Autor: Oscar Porras Silesky C16042
     Fecha: 13 de Abril de 2024
 
-    Descripción: Tester para el sistema de control de acceso de una compuerta de estacionamiento
+    Descripción: Tester para el sistema de control de acceso de una compuerta de estacionamiento.
 */
 
 module tester(
+
+    input wire G_O,
+    input wire G_C,
+    input wire B,
+    input wire A_B,
+    input wire S_L,
+
     output reg [7:0] P,
     output reg reset,
     output reg sensor_arrival,
@@ -109,6 +116,7 @@ module tester(
         #10 reset = 1;
         #10 reset = 0;
         P = 0;
+        #40 sensor_parked = 0;
         
         #80;// Fin de la cuarta prueba
     end

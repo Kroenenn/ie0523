@@ -9,7 +9,7 @@
 */
 
 module testbench;
-    // Se declaran las señales como wires que conectan el tester con el sistema
+    // Se declaran las señales como wires que conectan el tester con el sistema.
     wire [7:0] P;
     wire reset;
     wire sensor_arrival;
@@ -17,7 +17,8 @@ module testbench;
     wire p_enter;
     wire S_L;
     wire A_P;
-    wire G;
+    wire G_O;
+    wire G_C;
     wire B;
     wire A_B;
 
@@ -46,7 +47,8 @@ module testbench;
         .S_L(S_L),
         .sensor_arrival(sensor_arrival),
         .sensor_parked(sensor_parked),
-        .G(G),
+        .G_O(G_O),
+        .G_C(G_C),
         .B(B),
         .A_B(A_B)
     );
