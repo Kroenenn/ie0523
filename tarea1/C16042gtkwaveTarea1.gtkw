@@ -1,0 +1,33 @@
+[*]
+[*] GTKWave Analyzer v3.3.104 (w)1999-2020 BSI
+[*] Fri Apr 12 23:48:06 2024
+[*]
+[dumpfile] "/home/oscar/Documents/tarea1/test.vcd"
+[dumpfile_mtime] "Fri Apr 12 23:45:19 2024"
+[dumpfile_size] 2207
+[savefile] "/home/oscar/Documents/tarea1/C16042gtkwaveTarea1.gtkw"
+[timestart] 0
+[size] 1330 600
+[pos] 154 87
+*-18.000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] testbench.
+[sst_width] 233
+[signals_width] 142
+[sst_expanded] 1
+[sst_vpaned_height] 144
+@28
+testbench.reset
+testbench.sensor_arrival
+@22
+testbench.P[7:0]
+@28
+testbench.p_enter
+testbench.S_L
+testbench.G
+testbench.A_P
+testbench.sensor_parked
+testbench.B
+@29
+testbench.A_B
+[pattern_trace] 1
+[pattern_trace] 0
