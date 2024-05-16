@@ -1,0 +1,161 @@
+module ATMController (
+    input wire CLK,
+    input wire RESET,
+    input wire TARJETA_RECIBIDA,
+    input wire [15:0] PIN,
+    input wire [3:0] DIGITO,
+    input wire DIGITO_STB,
+    input wire TIPO_TRANS,
+    input wire [31:0] MONTO,
+    input wire MONTO_STB,
+    output reg BALANCE_ACTUALIZADO,
+    output reg ENTREGAR_DINERO,
+    output reg FONDOS_INSUFICIENTES,
+    output reg PIN_INCORRECTO,
+    output reg ADVERTENCIA,
+    output reg BLOQUEO
+);
+//Declaración de variables intermedias
+reg [2:0] state, next_state;
+reg [63:0] balance, next_balance;
+reg m_stb_previous, next_m_stb_previous;
+//Necesarios para el PIN
+reg [15:0] pin_entered, next_pin_entered;
+reg [2:0] pin_digits, next_pin_digits;
+reg [1:0] pin_attempts, next_pin_attempts;
+
+//Numero del estado 
+parameter IDLE = 3'b000; //Estado inicial, eperando tarjeta 
+parameter VERIFY_PIN = 3'b001; //Estado esperando pin correcto
+parameter PROCESS_TRANSACTION = 3'b010; //Esperando tipo de transaccion
+parameter WITHDRAWAL = 3'b011; //Tipo de transaccion retiro, esperando monto
+parameter DEPOSIT = 3'b111; //Tipo de transaccion deposito
+parameter BLOCKED = 3'b101; //Bloqueo, estado de bloqueo por 3 intentos fallidos
+
+//Indicaciones del pin
+always @(posedge CLK) begin
+    if (RESET == 2'b01) begin
+        state <= IDLE; 
+        balance <= 32'h0AF0_0000;
+        m_stb_previous <= 0;
+        pin_attempts <= 0;
+        pin_entered <= 0;
+        pin_digits <= 0;
+    end else begin
+        state <= next_state;
+        balance <= next_balance;
+        m_stb_previous <= next_m_stb_previous;
+        pin_attempts <= next_pin_attempts;
+        pin_entered <= next_pin_entered;
+        pin_digits <= next_pin_digits;
+
+    end
+end
+
+always @(*) begin
+    //Flip-Flops
+    next_state = state;
+    next_balance = balance;
+    next_m_stb_previous = MONTO_STB;
+    next_pin_attempts = pin_attempts;
+    next_pin_entered = pin_entered;
+    next_pin_digits = pin_digits;
+    
+    //Necesario inicializar las salidas
+    BALANCE_ACTUALIZADO = 0;
+    ENTREGAR_DINERO = 0;
+    FONDOS_INSUFICIENTES = 0;
+    PIN_INCORRECTO = 0;
+    ADVERTENCIA = 0;
+    BLOQUEO = 0;
+
+    //Se empiezan con la descripcion de la maquina de estados
+    case (state)
+        //Primer estado, valor binario 3'b000
+        IDLE: begin
+            if (TARJETA_RECIBIDA == 1) begin
+                next_state = VERIFY_PIN;
+                next_pin_entered = 0;
+            end else begin
+                // Sin cambio
+            end
+        end
+        //Segundo estado, valor binario 3'b001
+        //Se revisan las condiciones de PIN, es decir, si es correcto, incorrecto, si se pone en alto
+        //advertencia, si se pone en alto bloqueo, si aumenta intentos...
+        VERIFY_PIN: begin
+            if (DIGITO_STB && pin_digits < 4) begin
+                next_pin_entered = {pin_entered[11:0], DIGITO};
+                next_pin_digits = pin_digits + 1;
+            end
+            if (pin_digits == 4) begin
+                next_pin_digits = 0;
+            end
+            if (pin_digits == 4 && pin_entered != PIN) begin
+                next_pin_attempts = pin_attempts + 1;
+            end
+            PIN_INCORRECTO = (pin_digits == 4 && pin_entered != PIN);
+            ADVERTENCIA = PIN_INCORRECTO && (pin_attempts == 1) && (state == VERIFY_PIN);
+            BLOQUEO = PIN_INCORRECTO && (pin_attempts == 2) && (state == VERIFY_PIN);
+            if (pin_entered == PIN) begin
+                next_state = PROCESS_TRANSACTION;
+            end else if (pin_attempts == 3) begin
+                next_state = BLOCKED;
+            end else begin
+                next_state = VERIFY_PIN;
+            end
+        end
+        //Tercer estado, valor binario 3'b010
+        //Se espera PROCESS_TRANSACTION
+        PROCESS_TRANSACTION: begin
+            if (TIPO_TRANS == 1) begin
+                next_state = DEPOSIT;
+            end else begin
+                next_state = WITHDRAWAL;
+            end
+        end
+        //Cuarto estado, 3'b011
+        //Hace las operaciones de retiro, hace la comparacion entre monto y retiro, enciende las 
+        //señales BALANCE_ACTUALIZADO, FONDOS_INSUFICIENTES, ENTREGAR_DINERO... dependiendo de las condiciones
+        WITHDRAWAL: begin
+            if (MONTO_STB == 1 && m_stb_previous == 0) begin
+                if (MONTO <= balance) begin
+                    next_balance = balance - MONTO;
+                    ENTREGAR_DINERO = 1; 
+                end else begin
+                    FONDOS_INSUFICIENTES = 1;  
+                end
+            end
+            if (next_balance != balance) begin
+                BALANCE_ACTUALIZADO = 1;
+            end
+            if (TARJETA_RECIBIDA == 0) begin
+                next_state = IDLE;
+            end 
+        end
+        //Quinto estado, 3'b111
+        //Suma monto y deposito, si se actualiza entonces se prende BALANCE_ACTUALIZADO
+        DEPOSIT: begin
+            if (MONTO_STB == 1 && m_stb_previous == 0) begin
+                next_balance = balance + MONTO;
+            end
+            if (next_balance != balance) begin
+                BALANCE_ACTUALIZADO = 1;
+            end 
+            if (TARJETA_RECIBIDA == 0) begin
+                next_state = IDLE;
+            end 
+        end
+        //Sexto estado, 3'b101
+        //El sistema esta en un estado de bloqueo, hasta que se mande la señal de 
+        //reinicio no se podran hacer mas operaciones.
+        BLOCKED: begin
+            if (RESET == 1) begin
+                next_state = IDLE;
+            end else begin
+                next_state = BLOCKED;
+            end
+        end
+    endcase
+end
+endmodule
