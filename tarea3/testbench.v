@@ -3,9 +3,9 @@
 /*
     Archivo: testbench.v
     Autor: Oscar Porras Silesky C16042
-    Fecha: 1 de mayo de 2024
+    Fecha: 18 de mayo de 2024
 
-    Descripción: Testbench para el sistema de control de acceso de una compuerta de estacionamiento.
+    Descripción: Testbench para el sistema de cajero de banco automatico.
 */
 
 `include "cmos_cells.v"

@@ -14,13 +14,13 @@ SYNTH_FILES = synth.v
 RTLIL_FILES = RTLIL.v
 
 # Simulacion del archivo conductual
-EXECUTABLE1 = simulation1
+EXECUTABLE1 = simulation1.exe
 
 # Simulacion del archivo RTLIL
-EXECUTABLE2 = simulation2
+EXECUTABLE2 = simulation2.exe
 
 # Simulacion del archivo sintetizado
-EXECUTABLE3 = simulation3
+EXECUTABLE3 = simulation3.exe
 
 WAVEFILE_CONDUCTUAL = ondas.vcd
 WAVEFILE_RTLIL = ondas.vcd
@@ -83,5 +83,5 @@ clean:
 	rm -f $(RTLIL_FILES) $(SYNTH_FILES)
 
 # Reglas que no corresponden a archivos
-.PHONY: all clean wave_conductual wave_RTLIL wave_synth wave_retardo
-.PHONY: view_conductual view_RTLIL view_synth view_retardo
+.PHONY: all clean wave_conductual wave_RTLIL wave_synth
+.PHONY: view_conductual view_RTLIL view_synth

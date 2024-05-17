@@ -34,7 +34,7 @@ parameter BLOCKED = 3'b101; //Bloqueo, estado de bloqueo por 3 intentos fallidos
 
 //Indicaciones del pin
 always @(posedge CLK) begin
-    if (RESET == 2'b01) begin
+    if (RESET == 1'b0) begin
         state <= IDLE; 
         balance <= 32'h0AF0_0000;
         m_stb_previous <= 0;
@@ -77,7 +77,7 @@ always @(*) begin
                 next_state = VERIFY_PIN;
                 next_pin_entered = 0;
             end else begin
-                // Sin cambio
+                next_state = IDLE;
             end
         end
         //Segundo estado, valor binario 3'b001
@@ -96,10 +96,12 @@ always @(*) begin
             end
             PIN_INCORRECTO = (pin_digits == 4 && pin_entered != PIN);
             ADVERTENCIA = PIN_INCORRECTO && (pin_attempts == 1) && (state == VERIFY_PIN);
-            BLOQUEO = PIN_INCORRECTO && (pin_attempts == 2) && (state == VERIFY_PIN);
+            // BLOQUEO = PIN_INCORRECTO && (pin_attempts == 2) && (state == VERIFY_PIN);
+            BLOQUEO = PIN_INCORRECTO && (pin_attempts == 2) && (state == VERIFY_PIN) || (pin_attempts >= 3) && (state == VERIFY_PIN);
+            
             if (pin_entered == PIN) begin
                 next_state = PROCESS_TRANSACTION;
-            end else if (pin_attempts == 3) begin
+            end else if (pin_attempts >= 3) begin
                 next_state = BLOCKED;
             end else begin
                 next_state = VERIFY_PIN;
@@ -109,9 +111,9 @@ always @(*) begin
         //Se espera PROCESS_TRANSACTION
         PROCESS_TRANSACTION: begin
             if (TIPO_TRANS == 1) begin
-                next_state = DEPOSIT;
-            end else begin
                 next_state = WITHDRAWAL;
+            end else begin
+                next_state = DEPOSIT;
             end
         end
         //Cuarto estado, 3'b011
@@ -150,11 +152,18 @@ always @(*) begin
         //El sistema esta en un estado de bloqueo, hasta que se mande la señal de 
         //reinicio no se podran hacer mas operaciones.
         BLOCKED: begin
-            if (RESET == 1) begin
+            if (RESET == 0) begin
                 next_state = IDLE;
             end else begin
+                BLOQUEO = 1;
                 next_state = BLOCKED;
             end
+        end
+
+        // Se hace un case default para el estado IDLE
+        // en caso de que no se cumpla ninguna de las condiciones anteriores
+        default: begin
+            next_state = IDLE;
         end
     endcase
 end

@@ -1,41 +1,39 @@
 [*]
-[*] GTKWave Analyzer v3.3.118 (w)1999-2023 BSI
-[*] Tue May 14 14:50:21 2024
+[*] GTKWave Analyzer v3.3.104 (w)1999-2020 BSI
+[*] Fri May 17 01:23:51 2024
 [*]
-[dumpfile] "/home/oscar/Documentos/ie0523/tarea3/ondas.vcd"
-[dumpfile_mtime] "Tue May 14 14:49:04 2024"
-[dumpfile_size] 31462
-[savefile] "/home/oscar/Documentos/ie0523/tarea3/gtkwaveconfig.gtkw"
+[dumpfile] "/home/oscar/Documents/ie0523/tarea3/ondas.vcd"
+[dumpfile_mtime] "Fri May 17 01:23:38 2024"
+[dumpfile_size] 50983
+[savefile] "/home/oscar/Documents/ie0523/tarea3/gtkwaveconfig.gtkw"
 [timestart] 0
-[size] 1161 600
+[size] 1331 600
 [pos] -1 -1
-*-47.000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-46.000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [sst_width] 273
 [signals_width] 190
 [sst_expanded] 1
 [sst_vpaned_height] 157
 @28
-Testbench_banco.ADVERTENCIA
-Testbench_banco.BALANCE_ACTUALIZADO
-Testbench_banco.BLOQUEO
 Testbench_banco.CLK
+Testbench_banco.RESET
+Testbench_banco.TARJETA_RECIBIDA
 @22
+Testbench_banco.PIN[15:0]
 Testbench_banco.DIGITO[3:0]
 @28
 Testbench_banco.DIGITO_STB
-Testbench_banco.ENTREGAR_DINERO
-Testbench_banco.FONDOS_INSUFICIENTES
+Testbench_banco.PIN_INCORRECTO
+Testbench_banco.ADVERTENCIA
+Testbench_banco.BLOQUEO
+Testbench_banco.TIPO_TRANS
 @22
 Testbench_banco.MONTO[31:0]
-@28
-Testbench_banco.MONTO_STB
-@22
-Testbench_banco.PIN[15:0]
-@28
-Testbench_banco.PIN_INCORRECTO
-Testbench_banco.RESET
-Testbench_banco.TARJETA_RECIBIDA
 @29
-Testbench_banco.TIPO_TRANS
+Testbench_banco.MONTO_STB
+@28
+Testbench_banco.ENTREGAR_DINERO
+Testbench_banco.BALANCE_ACTUALIZADO
+Testbench_banco.FONDOS_INSUFICIENTES
 [pattern_trace] 1
 [pattern_trace] 0

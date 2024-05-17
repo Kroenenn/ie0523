@@ -25,82 +25,87 @@ module Controller_bank_Tester(
 );
 
     // Secuencia de pruebas
+    // Recordar que RESET == 0 aplica el reset al sistema
     initial begin
         // Inicialización
         CLK = 0;
-        RESET = 1;
-        PIN = 16'h8551;
+        RESET = 0;
+        PIN = 16'h1525;
         TARJETA_RECIBIDA = 0;
         DIGITO_STB = 0;
         MONTO_STB = 0;
-        TIPO_TRANS = 0;
-        #2 RESET = 0;
+        TIPO_TRANS = 1;
+        MONTO = 32'h0000_0000;
+        DIGITO = 4'b0000;
+        #2 RESET = 1;
 
+
+    // Prueba 1: Inserción de tarjeta y Pin incorrecto una vez, dos veces y tres veces
         // Caso 1: Inserción de tarjeta y Pin incorrecto una vez
         #2 TARJETA_RECIBIDA = 1;
-        #4 DIGITO = 4'b1000; DIGITO_STB = 1; #2 DIGITO_STB = 0;
+        #4 DIGITO = 4'b0001; DIGITO_STB = 1; #2 DIGITO_STB = 0;
         #2 DIGITO = 4'b0101; DIGITO_STB = 1; #2 DIGITO_STB = 0;
-        #2 DIGITO = 4'b0101; DIGITO_STB = 1; #2 DIGITO_STB = 0;
+        #2 DIGITO = 4'b0010; DIGITO_STB = 1; #2 DIGITO_STB = 0;
         #2 DIGITO = 4'b1111; DIGITO_STB = 1; #2 DIGITO_STB = 0;
         #20;
 
         // Caso 2: Inserción de tarjeta y Pin incorrecto dos veces (advertencia)
-        #4 DIGITO = 4'b1000; DIGITO_STB = 1; #2 DIGITO_STB = 0;
+        #4 DIGITO = 4'b0001; DIGITO_STB = 1; #2 DIGITO_STB = 0;
         #2 DIGITO = 4'b0101; DIGITO_STB = 1; #2 DIGITO_STB = 0;
-        #2 DIGITO = 4'b0101; DIGITO_STB = 1; #2 DIGITO_STB = 0;
+        #2 DIGITO = 4'b0010; DIGITO_STB = 1; #2 DIGITO_STB = 0;
         #2 DIGITO = 4'b1111; DIGITO_STB = 1; #2 DIGITO_STB = 0;
         #20;
 
         // Caso 3: Inserción de tarjeta y Pin incorrecto tres veces (bloqueo)
-        #4 DIGITO = 4'b1000; DIGITO_STB = 1; #2 DIGITO_STB = 0;
+        #4 DIGITO = 4'b0001; DIGITO_STB = 1; #2 DIGITO_STB = 0;
         #2 DIGITO = 4'b0101; DIGITO_STB = 1; #2 DIGITO_STB = 0;
-        #2 DIGITO = 4'b0101; DIGITO_STB = 1; #2 DIGITO_STB = 0;
+        #2 DIGITO = 4'b0010; DIGITO_STB = 1; #2 DIGITO_STB = 0;
         #2 DIGITO = 4'b1111; DIGITO_STB = 1; #2 DIGITO_STB = 0;
         #20;
 
-        // Caso 4: Depósito exitoso con Pin correcto
-        #2 RESET = 1;
+    // Prueba 2: Depósito de dinero
         #2 RESET = 0;
+        #2 RESET = 1;
         TARJETA_RECIBIDA = 1;
-        #2 DIGITO = 4'b1000; DIGITO_STB = 1; #2 DIGITO_STB = 0;
-        #2 DIGITO = 4'b0101; DIGITO_STB = 1; #2 DIGITO_STB = 0;
-        #2 DIGITO = 4'b0101; DIGITO_STB = 1; #2 DIGITO_STB = 0;
         #2 DIGITO = 4'b0001; DIGITO_STB = 1; #2 DIGITO_STB = 0;
-        #2 TIPO_TRANS = 1;
+        #2 DIGITO = 4'b0101; DIGITO_STB = 1; #2 DIGITO_STB = 0;
+        #2 DIGITO = 4'b0010; DIGITO_STB = 1; #2 DIGITO_STB = 0;
+        #2 DIGITO = 4'b0101; DIGITO_STB = 1; #2 DIGITO_STB = 0;
+        #2 TIPO_TRANS = 0;
         #4 MONTO = 32'hAAA0; MONTO_STB = 1; #2 MONTO_STB = 0;
         #10;
         TARJETA_RECIBIDA = 0;
         #10;
 
-        // Caso 5: Retiro exitoso con Pin correcto
+    // Prueba 3: Retiro de dinero
         TARJETA_RECIBIDA = 1;
-        #4 DIGITO = 4'b1000; DIGITO_STB = 1; #2 DIGITO_STB = 0;
+        #4 DIGITO = 4'b0001; DIGITO_STB = 1; #2 DIGITO_STB = 0;
         #2 DIGITO = 4'b0101; DIGITO_STB = 1; #2 DIGITO_STB = 0;
+        #2 DIGITO = 4'b0010; DIGITO_STB = 1; #2 DIGITO_STB = 0;
         #2 DIGITO = 4'b0101; DIGITO_STB = 1; #2 DIGITO_STB = 0;
-        #2 DIGITO = 4'b0001; DIGITO_STB = 1; #2 DIGITO_STB = 0;
-        #2 TIPO_TRANS = 0;
+        #2 TIPO_TRANS = 1;
         #4 MONTO = 32'h0000_0080; MONTO_STB = 1; #2 MONTO_STB = 0;
         #3;
         #10;
         TARJETA_RECIBIDA = 0;
         #15;
 
-        // Caso 6: Retiro con fondos insuficientes con Pin correcto
+    // Prueba 4: Retiro con fondos insuficientes
         TARJETA_RECIBIDA = 1;
-        #4 DIGITO = 4'b1000; DIGITO_STB = 1; #2 DIGITO_STB = 0;
+        #4 DIGITO = 4'b0001; DIGITO_STB = 1; #2 DIGITO_STB = 0;
         #2 DIGITO = 4'b0101; DIGITO_STB = 1; #2 DIGITO_STB = 0;
+        #2 DIGITO = 4'b0010; DIGITO_STB = 1; #2 DIGITO_STB = 0;
         #2 DIGITO = 4'b0101; DIGITO_STB = 1; #2 DIGITO_STB = 0;
-        #2 DIGITO = 4'b0001; DIGITO_STB = 1; #2 DIGITO_STB = 0;
-        #2 TIPO_TRANS = 0;
+        #2 TIPO_TRANS = 1;
         #4 MONTO = 32'hFFFF_FFFF; 
         #2 MONTO_STB = 1; #2 MONTO_STB = 0; 
         #10;
         TARJETA_RECIBIDA = 0;
         #10;
 
-        // Caso 7: Reset del sistema
-        RESET = 1;
-        #10 RESET = 0; TARJETA_RECIBIDA = 0;
+    // Reset del sistema
+        RESET = 0;
+        #10 RESET = 1; TARJETA_RECIBIDA = 0;
         #20;
 
         // Fin del Testbench
