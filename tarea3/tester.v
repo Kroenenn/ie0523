@@ -3,7 +3,18 @@
     Autor: Oscar Porras Silesky C16042
     Fecha: 18 de mayo de 2024
 
-    Descripción: Tester .
+    Descripción: Tester que se encarga de probar el módulo ATMController
+    de la tarea 3 de IE0523. Este módulo se encarga de simular el funcionamiento
+    de un cajero automático, el cual recibe una tarjeta, un pin y una transacción
+    (retiro o depósito) y se encarga
+    de realizar la transacción correspondiente. Si el pin es incorrecto, se
+    permite un máximo de 3 intentos, luego de los cuales se bloquea la tarjeta.
+    Se puede realizar un retiro de dinero, en cuyo caso se verifica que el monto
+    a retirar no sea mayor al balance actual. Si el monto a retirar es mayor al
+    balance, se activa la señal de FONDOS_INSUFICIENTES. Si el monto a retirar
+    es menor o igual al balance, se resta el monto al balance y se activa la señal
+    de ENTREGAR_DINERO. También se puede realizar un depósito de dinero, en cuyo
+    caso se suma el monto al balance y se activa la señal de ENTREGAR_DINERO.
 */
 
 module Controller_bank_Tester(

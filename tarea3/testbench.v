@@ -5,7 +5,9 @@
     Autor: Oscar Porras Silesky C16042
     Fecha: 18 de mayo de 2024
 
-    Descripción: Testbench para el sistema de cajero de banco automatico.
+    Descripción: Testbench para el sistema de cajero de banco automatizado. Este testbench
+    se encarga de instanciar el módulo ATMController y el módulo Controller_bank_Tester
+    para probar el funcionamiento del cajero de banco automatizado.
 */
 
 `include "cmos_cells.v"

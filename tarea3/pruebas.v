@@ -1,3 +1,24 @@
+/*
+
+    Archivo: pruebas.v
+    Autor: Oscar Porras Silesky C16042
+    Fecha: 18 de mayo de 2024
+
+    Descripción: Archivo que contiene el módulo ATMController, el cual se encarga de simular el funcionamiento
+    de un cajero automático, el cual recibe una tarjeta, un pin y una transacción
+    (retiro o depósito) y se encarga
+    de realizar la transacción correspondiente. Si el pin es incorrecto, se
+    permite un máximo de 3 intentos, luego de los cuales se bloquea la tarjeta.
+    Se puede realizar un retiro de dinero, en cuyo caso se verifica que el monto
+    a retirar no sea mayor al balance actual. Si el monto a retirar es mayor al
+    balance, se activa la señal de FONDOS_INSUFICIENTES. Si el monto a retirar
+    es menor o igual al balance, se resta el monto al balance y se activa la señal
+    de ENTREGAR_DINERO. También se puede realizar un depósito de dinero, en cuyo
+    caso se suma el monto al balance y se activa la señal de ENTREGAR_DINERO.
+
+*/
+
+
 module ATMController (
     input wire CLK,
     input wire RESET,
@@ -72,6 +93,8 @@ always @(*) begin
     //Se empieza con la descripcion de la maquina de estados
     case (state)
         //Primer estado, valor binario 6'b000001
+        // Este estado se encarga de esperar a que se inserte la tarjeta
+        // si se inserta la tarjeta se va a VERIFY_PIN
         IDLE: begin
             if (TARJETA_RECIBIDA == 1) begin
                 next_state = VERIFY_PIN;
@@ -81,8 +104,9 @@ always @(*) begin
             end
         end
         //Segundo estado, valor binario 6'b000010
-        //Se revisan las condiciones de PIN, es decir, si es correcto, incorrecto, si se pone en alto
-        //advertencia, si se pone en alto bloqueo, si aumenta intentos
+        // Este estado se encarga de verificar el pin ingresado por el usuario
+        // si el pin es correcto se va a PROCESS_TRANSACTION, si el pin es incorrecto
+        // se aumenta el contador de intentos y se va a BLOCKED si se ingresan 3 intentos
         VERIFY_PIN: begin
             if (DIGITO_STB && pin_digits < 4) begin
                 next_pin_entered = {pin_entered[11:0], DIGITO};
@@ -107,7 +131,8 @@ always @(*) begin
             end
         end
         //Tercer estado, valor binario 6'b000100
-        //Se espera PROCESS_TRANSACTION
+        //Se espera PROCESS_TRANSACTION para hacer la transaccion
+        // si es retiro se va a WITHDRAWAL, si es deposito se va a DEPOSIT
         PROCESS_TRANSACTION: begin
             if (TIPO_TRANS == 1) begin
                 next_state = WITHDRAWAL;
@@ -116,8 +141,9 @@ always @(*) begin
             end
         end
         //Cuarto estado, 6'b001000
-        //Hace las operaciones de retiro, hace la comparacion entre monto y retiro, enciende las 
-        //señales BALANCE_ACTUALIZADO, FONDOS_INSUFICIENTES, ENTREGAR_DINERO dependiendo de las condiciones
+        // Este estado se encarga de hacer la transaccion de retiro, si el monto es mayor al balance
+        // se prende la señal de FONDOS_INSUFICIENTES, si el monto es menor o igual al balance
+        // se resta el monto al balance y se prende la señal de ENTREGAR_DINERO
         WITHDRAWAL: begin
             if (MONTO_STB == 1 && m_stb_previous == 0) begin
                 if (MONTO <= balance) begin
@@ -135,7 +161,8 @@ always @(*) begin
             end 
         end
         //Quinto estado, 6'b010000
-        //Suma monto y deposito, si se actualiza entonces se prende BALANCE_ACTUALIZADO
+        // Este estado se encarga de hacer la transaccion de deposito, si el monto es mayor a 0
+        // se suma el monto al balance y se prende la señal de ENTREGAR_DINERO
         DEPOSIT: begin
             if (MONTO_STB == 1 && m_stb_previous == 0) begin
                 next_balance = balance + MONTO;
@@ -148,8 +175,7 @@ always @(*) begin
             end 
         end
         //Sexto estado, 6'b100000
-        //El sistema esta en un estado de bloqueo, hasta que se mande la señal de 
-        //reinicio no se podran hacer mas operaciones.
+        // Este estado se encarga de bloquear la tarjeta si se ingresan 3 intentos fallidos
         BLOCKED: begin
             if (RESET == 0) begin
                 next_state = IDLE;
