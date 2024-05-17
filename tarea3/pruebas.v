@@ -71,7 +71,7 @@ always @(*) begin
 
     //Se empieza con la descripcion de la maquina de estados
     case (state)
-        //Primer estado, valor binario 3'b000
+        //Primer estado, valor binario 6'b000001
         IDLE: begin
             if (TARJETA_RECIBIDA == 1) begin
                 next_state = VERIFY_PIN;
@@ -80,7 +80,7 @@ always @(*) begin
                 next_state = IDLE;
             end
         end
-        //Segundo estado, valor binario 3'b001
+        //Segundo estado, valor binario 6'b000010
         //Se revisan las condiciones de PIN, es decir, si es correcto, incorrecto, si se pone en alto
         //advertencia, si se pone en alto bloqueo, si aumenta intentos
         VERIFY_PIN: begin
@@ -106,7 +106,7 @@ always @(*) begin
                 next_state = VERIFY_PIN;
             end
         end
-        //Tercer estado, valor binario 3'b010
+        //Tercer estado, valor binario 6'b000100
         //Se espera PROCESS_TRANSACTION
         PROCESS_TRANSACTION: begin
             if (TIPO_TRANS == 1) begin
@@ -115,7 +115,7 @@ always @(*) begin
                 next_state = DEPOSIT;
             end
         end
-        //Cuarto estado, 3'b011
+        //Cuarto estado, 6'b001000
         //Hace las operaciones de retiro, hace la comparacion entre monto y retiro, enciende las 
         //señales BALANCE_ACTUALIZADO, FONDOS_INSUFICIENTES, ENTREGAR_DINERO dependiendo de las condiciones
         WITHDRAWAL: begin
@@ -134,7 +134,7 @@ always @(*) begin
                 next_state = IDLE;
             end 
         end
-        //Quinto estado, 3'b111
+        //Quinto estado, 6'b010000
         //Suma monto y deposito, si se actualiza entonces se prende BALANCE_ACTUALIZADO
         DEPOSIT: begin
             if (MONTO_STB == 1 && m_stb_previous == 0) begin
@@ -147,7 +147,7 @@ always @(*) begin
                 next_state = IDLE;
             end 
         end
-        //Sexto estado, 3'b101
+        //Sexto estado, 6'b100000
         //El sistema esta en un estado de bloqueo, hasta que se mande la señal de 
         //reinicio no se podran hacer mas operaciones.
         BLOCKED: begin
