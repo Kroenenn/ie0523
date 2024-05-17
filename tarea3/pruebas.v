@@ -69,7 +69,7 @@ always @(*) begin
     ADVERTENCIA = 0;
     BLOQUEO = 0;
 
-    //Se empiezan con la descripcion de la maquina de estados
+    //Se empieza con la descripcion de la maquina de estados
     case (state)
         //Primer estado, valor binario 3'b000
         IDLE: begin
