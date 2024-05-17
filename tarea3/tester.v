@@ -1,7 +1,7 @@
 /*
     Archivo: tester.v
     Autor: Oscar Porras Silesky C16042
-    Fecha: 13 de Abril de 2024
+    Fecha: 18 de mayo de 2024
 
     Descripción: Tester .
 */

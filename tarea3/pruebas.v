@@ -16,7 +16,7 @@ module ATMController (
     output reg BLOQUEO
 );
 //Declaración de variables intermedias
-reg [2:0] state, next_state;
+reg [5:0] state, next_state;
 reg [63:0] balance, next_balance;
 reg m_stb_previous, next_m_stb_previous;
 //Necesarios para el PIN
@@ -25,12 +25,12 @@ reg [2:0] pin_digits, next_pin_digits;
 reg [1:0] pin_attempts, next_pin_attempts;
 
 //Numero del estado 
-parameter IDLE = 3'b000; //Estado inicial, eperando tarjeta 
-parameter VERIFY_PIN = 3'b001; //Estado esperando pin correcto
-parameter PROCESS_TRANSACTION = 3'b010; //Esperando tipo de transaccion
-parameter WITHDRAWAL = 3'b011; //Tipo de transaccion retiro, esperando monto
-parameter DEPOSIT = 3'b111; //Tipo de transaccion deposito
-parameter BLOCKED = 3'b101; //Bloqueo, estado de bloqueo por 3 intentos fallidos
+parameter IDLE = 6'b000001; //Estado inicial, eperando tarjeta 
+parameter VERIFY_PIN = 6'b000010; //Estado esperando pin correcto
+parameter PROCESS_TRANSACTION = 6'b000100; //Esperando tipo de transaccion
+parameter WITHDRAWAL = 6'b001000; //Tipo de transaccion retiro, esperando monto
+parameter DEPOSIT = 6'b010000; //Tipo de transaccion deposito
+parameter BLOCKED = 6'b100000; //Bloqueo, estado de bloqueo por 3 intentos fallidos
 
 //Indicaciones del pin
 always @(posedge CLK) begin
@@ -82,7 +82,7 @@ always @(*) begin
         end
         //Segundo estado, valor binario 3'b001
         //Se revisan las condiciones de PIN, es decir, si es correcto, incorrecto, si se pone en alto
-        //advertencia, si se pone en alto bloqueo, si aumenta intentos...
+        //advertencia, si se pone en alto bloqueo, si aumenta intentos
         VERIFY_PIN: begin
             if (DIGITO_STB && pin_digits < 4) begin
                 next_pin_entered = {pin_entered[11:0], DIGITO};
@@ -96,7 +96,6 @@ always @(*) begin
             end
             PIN_INCORRECTO = (pin_digits == 4 && pin_entered != PIN);
             ADVERTENCIA = PIN_INCORRECTO && (pin_attempts == 1) && (state == VERIFY_PIN);
-            // BLOQUEO = PIN_INCORRECTO && (pin_attempts == 2) && (state == VERIFY_PIN);
             BLOQUEO = PIN_INCORRECTO && (pin_attempts == 2) && (state == VERIFY_PIN) || (pin_attempts >= 3) && (state == VERIFY_PIN);
             
             if (pin_entered == PIN) begin
@@ -118,7 +117,7 @@ always @(*) begin
         end
         //Cuarto estado, 3'b011
         //Hace las operaciones de retiro, hace la comparacion entre monto y retiro, enciende las 
-        //señales BALANCE_ACTUALIZADO, FONDOS_INSUFICIENTES, ENTREGAR_DINERO... dependiendo de las condiciones
+        //señales BALANCE_ACTUALIZADO, FONDOS_INSUFICIENTES, ENTREGAR_DINERO dependiendo de las condiciones
         WITHDRAWAL: begin
             if (MONTO_STB == 1 && m_stb_previous == 0) begin
                 if (MONTO <= balance) begin
