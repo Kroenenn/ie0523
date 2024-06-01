@@ -1,0 +1,89 @@
+[*]
+[*] GTKWave Analyzer v3.3.104 (w)1999-2020 BSI
+[*] Sat Jun  1 03:53:35 2024
+[*]
+[dumpfile] "/home/oscar/Documents/ie0523/tarea4/test.vcd"
+[dumpfile_mtime] "Sat Jun  1 03:53:05 2024"
+[dumpfile_size] 43267
+[savefile] "/home/oscar/Documents/ie0523/tarea4/gtkwaveconfig.gtkw"
+[timestart] 0
+[size] 1580 768
+[pos] -1 -1
+*-6.000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] Testbench.
+[sst_width] 233
+[signals_width] 194
+[sst_expanded] 1
+[sst_vpaned_height] 202
+@28
+Testbench.CLK
+Testbench.SCK
+Testbench.maestro.MODO[1:0]
+@200
+-Master
+@22
+[color] 3
+Testbench.maestro.Data_register[15:0]
+@28
+[color] 3
+Testbench.start_transaction
+[color] 3
+Testbench.maestro.CKP
+[color] 3
+Testbench.maestro.CPH
+[color] 3
+Testbench.maestro.CS
+[color] 3
+Testbench.maestro.MISO
+[color] 3
+Testbench.maestro.MOSI
+@29
+[color] 3
+Testbench.maestro.end_protocol
+@22
+[color] 3
+Testbench.maestro.Data1_newdata[7:0]
+[color] 3
+Testbench.maestro.Data2_newdata[7:0]
+@28
+[color] 3
+Testbench.maestro.Reset
+@200
+-Slave
+-1
+@22
+[color] 2
+Testbench.slave1.Data_register[15:0]
+@28
+[color] 2
+Testbench.slave1.SS
+[color] 2
+Testbench.slave1.MISO
+[color] 2
+Testbench.slave1.MOSI
+[color] 2
+Testbench.slave1.end_protocol
+@200
+-2
+@22
+[color] 7
+Testbench.slave2.Data_register[15:0]
+@28
+[color] 7
+Testbench.slave2.SS
+[color] 7
+Testbench.slave2.MISO
+[color] 7
+Testbench.slave2.MOSI
+[color] 7
+Testbench.slave2.end_protocol
+@200
+-3
+@22
+Testbench.slave3.Data_register[15:0]
+@28
+Testbench.slave3.MISO
+Testbench.slave3.MOSI
+Testbench.slave3.end_protocol
+[pattern_trace] 1
+[pattern_trace] 0
