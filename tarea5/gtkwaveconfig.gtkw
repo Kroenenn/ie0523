@@ -1,0 +1,53 @@
+[*]
+[*] GTKWave Analyzer v3.3.104 (w)1999-2020 BSI
+[*] Mon Jun 17 22:02:45 2024
+[*]
+[dumpfile] "/home/oscar/Documents/ie0523/tarea5/test.vcd"
+[dumpfile_mtime] "Mon Jun 17 22:00:12 2024"
+[dumpfile_size] 22706
+[savefile] "/home/oscar/Documents/ie0523/tarea5/gtkwaveconfig.gtkw"
+[timestart] 0
+[size] 1850 905
+[pos] -38 -38
+*-6.000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] Testbench.
+[sst_width] 233
+[signals_width] 190
+[sst_expanded] 1
+[sst_vpaned_height] 250
+@28
+[color] 7
+Testbench.SCL
+[color] 7
+Testbench.I2c_transmisor.RESET
+@200
+-Transmisor
+@22
+[color] 3
+Testbench.I2c_transmisor.actual_state[5:0]
+[color] 3
+Testbench.I2c_transmisor.I2c_addr_master[6:0]
+[color] 3
+Testbench.I2c_transmisor.Wr_data_master[15:0]
+@28
+[color] 3
+Testbench.I2c_transmisor.START_STB
+[color] 3
+Testbench.I2c_transmisor.RNW
+[color] 3
+Testbench.I2c_transmisor.SDA_IN
+[color] 3
+Testbench.I2c_transmisor.SDA_OE
+[color] 3
+Testbench.I2c_transmisor.SDA_OUT
+@200
+-Receptor
+@22
+Testbench.I2c_receptor.Wr_data_slave[15:0]
+Testbench.I2c_transmisor.I2c_addr_master[6:0]
+Testbench.I2c_receptor.Compare_address[6:0]
+Testbench.I2c_receptor.Rd_data_slave[15:0]
+@23
+Testbench.I2c_receptor.actual_state[3:0]
+[pattern_trace] 1
+[pattern_trace] 0
